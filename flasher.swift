@@ -71,6 +71,10 @@ if args.contains("--uninstall") {
     } catch {
         fail("could not remove \(exe): \(error.localizedDescription)")
     }
+    let dataDir = (NSHomeDirectory() as NSString).appendingPathComponent(".local/share/flasher")
+    if (try? FileManager.default.removeItem(atPath: dataDir)) != nil {
+        print("removed \(dataDir)")
+    }
     exit(0)
 }
 

@@ -14,6 +14,8 @@ curl -fsSL https://raw.githubusercontent.com/JonasGoetz01/flasher/main/install.s
 
 Requires an Apple Silicon Mac (macOS 12+). Downloads a precompiled binary and installs it to `~/.local/bin` (override with `FLASHER_INSTALL_DIR=/some/dir`).
 
+The installer also downloads the bundled image (`assets/flash.jpeg`) to `~/.local/share/flasher/` and immediately starts flashing it every 10–60 seconds. Stop it with `flasher --stop`.
+
 ## Usage
 
 ```sh
@@ -38,7 +40,7 @@ Supported formats: png, jpg, gif, heic, tiff, bmp, webp.
 flasher --uninstall
 ```
 
-Stops any running instance and deletes the binary.
+Stops any running instance and deletes the binary and the downloaded image.
 
 ## Build from source
 
