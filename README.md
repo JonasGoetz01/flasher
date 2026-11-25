@@ -12,7 +12,7 @@ A tiny macOS tool that runs in the background and, at random intervals, flashes 
 curl -fsSL https://raw.githubusercontent.com/JonasGoetz01/flasher/main/install.sh | sh
 ```
 
-Requires macOS and the Xcode Command Line Tools (`xcode-select --install`). Installs to `~/.local/bin` (override with `FLASHER_INSTALL_DIR=/some/dir`).
+Requires an Apple Silicon Mac (macOS 12+). Downloads a precompiled binary and installs it to `~/.local/bin` (override with `FLASHER_INSTALL_DIR=/some/dir`).
 
 ## Usage
 
@@ -43,5 +43,6 @@ Stops any running instance and deletes the binary.
 ## Build from source
 
 ```sh
-swiftc -O flasher.swift -o flasher
+swiftc -O -target arm64-apple-macos12 flasher.swift -o bin/flasher
+strip -x bin/flasher && codesign -s - -f bin/flasher
 ```

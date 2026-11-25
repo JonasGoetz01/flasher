@@ -1,19 +1,13 @@
 #!/bin/sh
-# flasher installer: downloads the source, compiles it and installs the binary.
+# flasher installer: downloads the precompiled Apple Silicon binary.
 #   curl -fsSL https://raw.githubusercontent.com/JonasGoetz01/flasher/main/install.sh | sh
 set -eu
 
-REPO_RAW="https://raw.githubusercontent.com/JonasGoetz01/flasher/main"
+BIN_URL="https://raw.githubusercontent.com/JonasGoetz01/flasher/main/bin/flasher"
 INSTALL_DIR="${FLASHER_INSTALL_DIR:-$HOME/.local/bin}"
 
-if [ "$(uname -s)" != "Darwin" ]; then
-    echo "flasher only supports macOS." >&2
-    exit 1
-fi
-
-if ! command -v swiftc >/dev/null 2>&1; then
-    echo "swiftc not found. Install the Xcode Command Line Tools first:" >&2
-    echo "  xcode-select --install" >&2
+if [ "$(uname -s)" != "Darwin" ] || [ "$(uname -m)" != "arm64" ]; then
+    echo "flasher only runs on Apple Silicon Macs." >&2
     exit 1
 fi
 
@@ -21,14 +15,12 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 echo "Downloading flasher..."
-curl -fsSL "$REPO_RAW/flasher.swift" -o "$TMP/flasher.swift"
-
-echo "Compiling..."
-swiftc -O "$TMP/flasher.swift" -o "$TMP/flasher"
+curl -fsSL "$BIN_URL" -o "$TMP/flasher"
+chmod +x "$TMP/flasher"
+xattr -c "$TMP/flasher" 2>/dev/null || true
 
 mkdir -p "$INSTALL_DIR"
 mv "$TMP/flasher" "$INSTALL_DIR/flasher"
-chmod +x "$INSTALL_DIR/flasher"
 
 echo "Installed to $INSTALL_DIR/flasher"
 case ":$PATH:" in
